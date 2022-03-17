@@ -1,0 +1,26 @@
+if(MSVC)
+    add_executable(example_reduce example_reduce.cc)
+    target_link_libraries(example_reduce gloo)
+    add_executable(example_allreduce example_allreduce.cc)
+    target_link_libraries(example_allreduce gloo)
+
+    if(USE_LIBUV)
+        add_custom_command(TARGET example_reduce POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${libuv_DLL_PATH}"
+                $<TARGET_FILE_DIR:example_reduce>)
+    endif()
+else()
+    add_executable(sagreduce src/sag_reduce.cc)
+    target_link_libraries(sagreduce gloo)
+    add_executable(treereduce src/tree_reduce.cc)
+    target_link_libraries(treereduce gloo)
+    add_executable(treebroadcast src/treebroadcast.cc)
+    target_link_libraries(treebroadcast gloo)
+    add_executable(sagbroadcast src/sagbroadcast.cc)
+    target_link_libraries(sagbroadcast gloo)
+    add_executable(example1 example_reduce.cc)
+    target_link_libraries(example1 gloo)
+    add_executable(looks_like_mpi looks_like_mpi.cc)
+    target_link_libraries(looks_like_mpi gloo)
+endif()
